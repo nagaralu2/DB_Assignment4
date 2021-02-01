@@ -1,30 +1,3 @@
-/* 0. Complete the lab to create the SELECT CREATE query!
-add PK anf FK
-*/
---select  * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Taverns';
---select * from INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME = 'Taverns';
---select * from INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS;
---select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS
-
-DECLARE @max_column INT
-SELECT @max_column = MAX(ORDINAL_POSITION) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'taverns';
-SELECT 'CREATE TABLE taverns ('  AS queryPiece
-UNION ALL
-SELECT CONCAT(cols.COLUMN_NAME, ' ', DATA_TYPE,
-(CASE WHEN CHARACTER_MAXIMUM_LENGTH IS NOT NULL THEN CONCAT('(', CHARACTER_MAXIMUM_LENGTH, ')') END),
-(CASE WHEN tableConst.CONSTRAINT_NAME = keys.CONSTRAINT_NAME  THEN CONCAT(' ', tableConst.CONSTRAINT_TYPE) END),
-(CASE WHEN constKeys.CONSTRAINT_NAME = refConst.UNIQUE_CONSTRAINT_NAME THEN CONCAT(' REFERENCES ', constKeys.TABLE_NAME, '(', constKeys.COLUMN_NAME, ')') END),
-(CASE WHEN cols.ORDINAL_POSITION != @max_column THEN ',' END)) AS queryPiece
-FROM INFORMATION_SCHEMA.COLUMNS AS cols 
-LEFT JOIN information_schema.key_column_usage AS keys ON (keys.TABLE_NAME = cols.TABLE_NAME AND keys.COLUMN_NAME = cols.COLUMN_NAME)
-LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS tableConst ON (tableConst.CONSTRAINT_NAME = keys.CONSTRAINT_NAME)
-LEFT JOIN information_schema.referential_constraints AS refConst ON (refConst.CONSTRAINT_NAME = keys.CONSTRAINT_NAME)
--- did not understood this last left join below, whay again? why keys does not work ?
-LEFT JOIN information_schema.key_column_usage AS constKeys ON (constKeys.CONSTRAINT_NAME = refConst.UNIQUE_CONSTRAINT_NAME)
-WHERE cols.TABLE_NAME = 'taverns'
-UNION ALL
-SELECT ')'  AS queryPieces
-
 /*
 1. Write a query to return users who have admin roles
 in my seeding data there were no admin roles, so the query is for owner
@@ -96,6 +69,10 @@ For Number 9:
 ---
 select sysObj.name, sysCol.name, *
 from sys.objects sysObj inner join sys.columns sysCol on sysObj.object_id = sysCol.object_id
+--select  * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Taverns';
+--select * from INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME = 'Taverns';
+--select * from INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS;
+--select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS
 ---*/
 
 DECLARE @max_column INT, @tableName VARCHAR(240)
