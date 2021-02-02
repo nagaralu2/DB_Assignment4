@@ -85,7 +85,7 @@ VALUES (1, 'single 1', 'Agnes Doyle', '01/03/2021','01/07/2021', $70),
 --Query assumning a date range of 01/02 to 01/06
 DECLARE @stayIn DATE = '01/02/2021', @stayOut DATE = '01/06/2021'
 SELECT guestName, checkInDate, checkOutDate FROM [roomStays]
-WHERE checkInDate >= @stayIn AND checkOutDate <= @stayOut
+WHERE (checkInDate BETWEEN @stayIn AND @stayOut) OR (checkOutDate BETWEEN @stayIn AND @stayOut)
 /*
 
 9. Using the additional queries provided, take the lab’s SELECT ‘CREATE query’ and add any IDENTITY and 
