@@ -63,6 +63,29 @@ JOIN (SELECT GuestID, MAX(level) AS maxLevel FROM [levels] GROUP BY GuestID) AS 
 8. Write a query that returns guests that stay within a date range. Please remember that guests can stay 
 for more than one night AND not all of the dates they stay have to be in that range (just some of them)
 */
+DROP TABLE IF EXISTS [roomStays];
+
+CREATE TABLE [roomStays] (
+ID INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+tavernId INT NOT NULL FOREIGN KEY REFERENCES taverns(ID), 
+room VARCHAR(250) NOT NULL,
+guestName VARCHAR(250) NOT NULL,
+checkInDate DATE NOT NULL,
+checkOutDate DATE NOT NULL,
+rate MONEY NOT NULL
+);
+
+INSERT INTO [roomStays] (tavernId, room, guestName, checkInDate, checkOutDate, rate)
+VALUES (1, 'single 1', 'Agnes Doyle', '01/03/2021','01/07/2021', $70),
+(1, 'single 2', 'Lindsey Robbins', '01/01/2021','01/03/2021', $90),
+(2, 'Suite A', 'Patti Flores', '01/01/2021','01/08/2021', $150),
+(3, 'Suite B', 'Marsha Black', '01/03/2021','01/05/2021', $170),
+(4, 'Villa', 'Albert Vega', '01/10/2021','01/12/2021', $300);
+
+--Query assumning a date range of 01/02 to 01/06
+DECLARE @stayIn DATE = '01/02/2021', @stayOut DATE = '01/06/2021'
+SELECT guestName, checkInDate, checkOutDate FROM [roomStays]
+WHERE checkInDate >= @stayIn AND checkOutDate <= @stayOut
 /*
 
 9. Using the additional queries provided, take the lab’s SELECT ‘CREATE query’ and add any IDENTITY and 
