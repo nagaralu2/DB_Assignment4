@@ -63,6 +63,8 @@ JOIN (SELECT GuestID, MAX(level) AS maxLevel FROM [levels] GROUP BY GuestID) AS 
 8. Write a query that returns guests that stay within a date range. Please remember that guests can stay 
 for more than one night AND not all of the dates they stay have to be in that range (just some of them)
 */
+--new roomStays table to include checkout date
+--roomStays table
 DROP TABLE IF EXISTS [roomStays];
 
 CREATE TABLE [roomStays] (
