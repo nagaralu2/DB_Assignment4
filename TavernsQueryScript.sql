@@ -83,17 +83,16 @@ UNION ALL
 SELECT CONCAT(cols.COLUMN_NAME, ' ', DATA_TYPE,
 (CASE WHEN CHARACTER_MAXIMUM_LENGTH IS NOT NULL THEN CONCAT('(', CHARACTER_MAXIMUM_LENGTH, ')') END),
 (CASE WHEN tableConst.CONSTRAINT_NAME = keys.CONSTRAINT_NAME  THEN CONCAT(' ', tableConst.CONSTRAINT_TYPE) END),
-(CASE WHEN sysCol.is_identity = 1 THEN ' IDENTITY(1,1)' END),
+(CASE WHEN refConst.CONSTRAINT_NAME IS NULL AND keys.COLUMN_NAME IS NOT NULL THEN ' IDENTITY(1,1)' END),
 (CASE WHEN constKeys.CONSTRAINT_NAME = refConst.UNIQUE_CONSTRAINT_NAME THEN CONCAT(' REFERENCES ', constKeys.TABLE_NAME, '(', constKeys.COLUMN_NAME, ')') END),
 (CASE WHEN cols.ORDINAL_POSITION != @max_column THEN ',' END)) AS queryPiece
 FROM INFORMATION_SCHEMA.COLUMNS AS cols 
 LEFT JOIN information_schema.key_column_usage AS keys ON (keys.TABLE_NAME = cols.TABLE_NAME AND keys.COLUMN_NAME = cols.COLUMN_NAME)
 LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS tableConst ON (tableConst.CONSTRAINT_NAME = keys.CONSTRAINT_NAME)
 LEFT JOIN information_schema.referential_constraints AS refConst ON (refConst.CONSTRAINT_NAME = keys.CONSTRAINT_NAME)
--- did not understood this last left join below, whay again? why keys does not work ?
 LEFT JOIN information_schema.key_column_usage AS constKeys ON (constKeys.CONSTRAINT_NAME = refConst.UNIQUE_CONSTRAINT_NAME)
-LEFT JOIN sys.objects AS sysObj ON sysObj.name = keys.CONSTRAINT_NAME 
-LEFT join sys.columns AS sysCol ON sysCol.object_id = sysObj.object_id 
+--LEFT JOIN sys.objects AS sysObj ON sysObj.name = keys.CONSTRAINT_NAME 
+--LEFT join sys.columns AS sysCol ON sysCol.object_id = sysObj.object_id 
 WHERE cols.TABLE_NAME = @tableName
 UNION ALL
 SELECT ')'  AS queryPieces
