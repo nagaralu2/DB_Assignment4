@@ -52,7 +52,11 @@ ORDER BY g.guestName ASC
 /*
 7. Write a query that returns guests with ONLY their highest level class
 */
-
+SELECT guestName, className, levels.Level AS highestLevel FROM [guests]
+JOIN [levels] ON levels.guestId = guests.ID
+JOIN [class] ON levels.classId = class.ID
+JOIN (SELECT GuestID, MAX(level) AS maxLevel FROM [levels] GROUP BY GuestID) AS mlvs
+	ON mlvs.guestId = guests.ID and mlvs.maxLevel = levels.Level
 
 /*
 
